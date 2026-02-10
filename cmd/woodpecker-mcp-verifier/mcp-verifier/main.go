@@ -33,7 +33,7 @@ func RunClient(ctx context.Context, serverURL string, protocol utils.MCMCPprotoc
 		return err
 	}
 	transport := getTransport(serverURL, protocol, cmdArgs, mcpConfig.Config)
-	client := mcp.NewClient(&mcp.Implementation{Name: "mcp-client", Version: "v1.0.0"}, nil)
+	client := mcp.NewClient(&mcp.Implementation{Name: "woodpecker-mcp-verifier", Version: "v1.0.0"}, nil)
 	cs, err := client.Connect(ctx, transport, nil)
 	if err != nil {
 		output.WriteFatal("Error initializing client: %v", err)
@@ -176,5 +176,11 @@ func (m *mcpClient) GetMCPConfig(jsonPayloadPath string) (*MCPConfig, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error unmarshaling JSON: %v", err)
 	}
+	// Add Auth headers
+	auth := viper.GetString("WOODPECKER_AUTH_HEADER")
+	if auth != "" {
+		collection.Config.CustomHeaders["Authorization"] = auth
+	}
+
 	return &collection, nil
 }
