@@ -28,3 +28,17 @@ func (m *MCMCPprotocol) Set(value string) error {
 func (m *MCMCPprotocol) Type() string {
 	return `MCPProtocol, one of "stdio", "sse", "streamable-http"`
 }
+
+type MCPConfig struct {
+	Config MCPConfigConnection `json:"config"`
+}
+
+type MCPConfigConnection struct {
+	CustomHeaders map[string]string `json:"customHeaders"`
+	Payloads      []PayloadContent  `json:"payloads"`
+}
+
+type PayloadContent struct {
+	Content string   `json:"content"`
+	Tags    []string `json:"tags"`
+}

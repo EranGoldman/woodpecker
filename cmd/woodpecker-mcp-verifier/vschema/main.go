@@ -1,12 +1,34 @@
-package mcpverifier
+// Package vschema provides the logic to validate the MCP tools input
+// schema and be able to provide a test payload in accordance to it
+package vschema
 
 import (
 	"fmt"
+
+	"github.com/operantai/woodpecker/cmd/woodpecker-mcp-verifier/utils"
 )
+
+// BasicParametersCheck implements IvSchema.
+func (v *VSchema) BasicParametersCheck(schema any, mPayload utils.PayloadContent) (map[string]any, error) {
+	resp, err := checkToolTypeParams(schema, mPayload)
+	return *resp, err
+}
+
+// ValidateWithAI implements IvSchema.
+func (v *VSchema) ValidateWithAI(schema any, mPayload utils.PayloadContent, aiFormatter IAIFormatter) (map[string]any, error) {
+	respSchema, err := aiFormatter.AnalyzeSchema(schema)
+
+	if err != nil {
+		return nil, err
+	}
+	params := addPayload(&respSchema, mPayload)
+
+	return *params, err
+}
 
 // Takes the schema passed of each tool and parse it to find an input of type string to send the payload
 // It also checks for the required fields and assigns default values
-func checkToolTypeParams(schemaDef any, mPayload PayloadContent) (*map[string]any, error) {
+func checkToolTypeParams(schemaDef any, mPayload utils.PayloadContent) (*map[string]any, error) {
 	// Assert the input is a map
 	schema, ok := schemaDef.(map[string]any)
 	if !ok {
@@ -61,15 +83,16 @@ func checkToolTypeParams(schemaDef any, mPayload PayloadContent) (*map[string]an
 	return params, nil
 }
 
-// setParamsSchema checks the current input schema of the tool and sets the default fields needed
-// some paramters are required, setting those and using one string field to send the payload we want
-func setParamsSchema(inputSchema any, mPayload PayloadContent) (map[string]any, error) {
-
-	schema, err := checkToolTypeParams(inputSchema, mPayload)
-	if err != nil {
-		return nil, err
+// addPayload loops over the json response and adds the payload we want to the first string type field
+func addPayload(data *map[string]any, mPayload utils.PayloadContent) *map[string]any {
+	for key, value := range *data {
+		if keyVal, ok := value.(string); ok && key == "my_custom_field" {
+			(*data)[keyVal] = mPayload.Content
+			delete(*data, key)
+			break
+		}
 	}
-	return *schema, nil
+	return data
 }
 
 // defaultForJSONType sets default values to field types

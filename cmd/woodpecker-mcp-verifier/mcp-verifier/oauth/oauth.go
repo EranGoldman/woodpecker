@@ -388,7 +388,7 @@ func openBrowser(url string) error {
 // CheckCurrentToken checks if there is a creds file with an access token already provisioned for the current issuer url
 func (o *OauthManager) CheckCurrentToken(issuer string) (*TokenResponse, error) {
 
-	appName := viper.GetString("WOODPECKER_APP_NAME")
+	appName := viper.GetString("APP_NAME")
 	file, err := checkCredsPath(appName)
 	if err != nil {
 		return nil, err
@@ -410,7 +410,7 @@ func (o *OauthManager) CheckCurrentToken(issuer string) (*TokenResponse, error) 
 // SaveCacheInfo saves in a creds file the access token retrieved from the oauth flow response
 func (o *OauthManager) SaveCacheInfo(issuer string, token *TokenResponse) error {
 
-	appName := viper.GetString("WOODPECKER_APP_NAME")
+	appName := viper.GetString("APP_NAME")
 	file, err := checkCredsPath(appName)
 	if err != nil {
 		return err

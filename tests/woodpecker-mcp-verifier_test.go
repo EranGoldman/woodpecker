@@ -7,9 +7,27 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	mcpverifier "github.com/operantai/woodpecker/cmd/woodpecker-mcp-verifier/mcp-verifier"
+	"github.com/operantai/woodpecker/cmd/woodpecker-mcp-verifier/utils"
+	"github.com/operantai/woodpecker/cmd/woodpecker-mcp-verifier/vschema"
 )
 
 type MCPClientSessionMock struct{}
+
+type MockAIFormatter struct{}
+
+func (a *MockAIFormatter) AnalyzeSchema(inputSchema any) (map[string]any, error) {
+	return map[string]any{"response": "response"}, nil
+}
+
+type MockSchemaValidator struct{}
+
+func (v *MockSchemaValidator) ValidateWithAI(schema any, mPayload utils.PayloadContent, aiFormatter vschema.IAIFormatter) (map[string]any, error) {
+	return map[string]any{"response": "response"}, nil
+}
+
+func (v *MockSchemaValidator) BasicParametersCheck(schema any, mPayload utils.PayloadContent) (map[string]any, error) {
+	return map[string]any{"response": "response"}, nil
+}
 
 func (m *MCPClientSessionMock) CallTool(ctx context.Context, params *mcp.CallToolParams) (*mcp.CallToolResult, error) {
 
@@ -72,12 +90,17 @@ var _ = Describe("MCP Client verifier tests", func() {
 				Title:        "",
 				Icons:        []mcp.Icon{},
 			}
-			payload := &mcpverifier.PayloadContent{
+			payload := &utils.PayloadContent{
 				Content: "This is going to be fun",
 				Tags:    []string{"LLM"},
 			}
-			mcpv := mcpverifier.NewMCPClient()
-			err := mcpv.ToolCallWithPayload(ctx, csMock, *tool, *payload)
+
+			validator := &MockSchemaValidator{}
+
+			mcpv, err := mcpverifier.NewMCPClient(mcpverifier.WithValidator(validator))
+			Expect(err).NotTo(HaveOccurred())
+
+			err = mcpv.ToolCallWithPayload(ctx, csMock, *tool, *payload)
 
 			Expect(err).NotTo(HaveOccurred())
 		})

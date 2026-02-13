@@ -74,9 +74,9 @@ func init() {
 	}
 
 	// Sets App name
-	appName := viper.GetString("WOODPECKER_APP_NAME")
+	appName := viper.GetString("APP_NAME")
 	if appName == "" {
 		output.WriteInfo("Setting WOODPECKER_APP_NAME to woodpecker-mcp-verifier")
-		viper.Set("WOODPECKER_APP_NAME", "woodpecker-mcp-verifier")
+		viper.Set("APP_NAME", "woodpecker-mcp-verifier")
 	}
 }
