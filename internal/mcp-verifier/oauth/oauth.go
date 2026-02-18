@@ -52,6 +52,14 @@ func OauthHandler(req *http.Request, res *http.Response) (oauth2.TokenSource, er
 		callBackPort = "6274"
 	}
 
+	authValue := res.Header.Get("Authorization")
+	if authValue != "" {
+		return oauth2.StaticTokenSource(&oauth2.Token{
+			AccessToken: authValue,
+			TokenType:   "Bearer",
+		}), nil
+	}
+
 	metadataURL, err := oauthFlow.ExtractResourceMetadata(authHeader)
 	if err != nil {
 		return nil, err
@@ -464,7 +472,7 @@ func checkCredsPath(appName string) (configPath string, err error) {
 	file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0666)
 
 	if errors.Is(err, os.ErrExist) {
-		output.WriteInfo("File already exists. Skipping initialization.")
+		output.WriteInfo("File: %s already exists. Using cached toke.", filePath)
 		return filePath, nil
 
 	} else if err != nil {

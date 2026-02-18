@@ -64,6 +64,12 @@ func (t *HTTPTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 		haveBody  bool
 		bodyBytes []byte
 	)
+
+	// Loop over the custom headers and set them
+	for key, val := range t.opts.CustomHeaders {
+		req.Header.Add(key, val)
+	}
+
 	if req.Body != nil && req.Body != http.NoBody {
 		// if we're setting Body, we must mutate first.
 		req = req.Clone(req.Context())
@@ -112,11 +118,6 @@ func (t *HTTPTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	if haveBody {
 		req = req.Clone(req.Context())
 		req.Body = io.NopCloser(bytes.NewReader(bodyBytes))
-	}
-
-	// Loop over the custom headers and set them
-	for key, val := range t.opts.CustomHeaders {
-		req.Header.Add(key, val)
 	}
 
 	return t.opts.Base.RoundTrip(req)

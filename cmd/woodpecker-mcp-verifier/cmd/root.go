@@ -1,11 +1,12 @@
+// Package cmd contains the cli commands to start and run the MCP client verifier
 package cmd
 
 import (
 	"context"
 	"strings"
 
-	mcpverifier "github.com/operantai/woodpecker/cmd/woodpecker-mcp-verifier/mcp-verifier"
 	"github.com/operantai/woodpecker/cmd/woodpecker-mcp-verifier/utils"
+	mcpverifier "github.com/operantai/woodpecker/internal/mcp-verifier"
 	"github.com/operantai/woodpecker/internal/output"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -37,7 +38,7 @@ var runCmd = &cobra.Command{
 	Short: "Run a MCP client verifier as a Woodpecker component",
 	Long:  "Run a MCP client verifier as a Woodpecker component",
 	Run: func(cmd *cobra.Command, args []string) {
-		output.WriteInfo("MCP client verifying starting ...")
+		output.WriteInfo("MCP client verifier starting ...")
 		var serverURL, payloadPath string
 		var err error
 

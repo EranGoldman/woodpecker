@@ -6,9 +6,9 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	mcpverifier "github.com/operantai/woodpecker/cmd/woodpecker-mcp-verifier/mcp-verifier"
 	"github.com/operantai/woodpecker/cmd/woodpecker-mcp-verifier/utils"
 	"github.com/operantai/woodpecker/cmd/woodpecker-mcp-verifier/vschema"
+	mcpverifier "github.com/operantai/woodpecker/internal/mcp-verifier"
 )
 
 type MCPClientSessionMock struct{}

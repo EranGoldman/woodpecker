@@ -15,9 +15,9 @@ import (
 	"time"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
-	"github.com/operantai/woodpecker/cmd/woodpecker-mcp-verifier/mcp-verifier/oauth"
 	"github.com/operantai/woodpecker/cmd/woodpecker-mcp-verifier/utils"
 	"github.com/operantai/woodpecker/cmd/woodpecker-mcp-verifier/vschema"
+	"github.com/operantai/woodpecker/internal/mcp-verifier/oauth"
 	"github.com/operantai/woodpecker/internal/output"
 	"github.com/spf13/viper"
 	"golang.org/x/sync/errgroup"
