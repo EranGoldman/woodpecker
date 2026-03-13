@@ -4,7 +4,7 @@ go 1.24.11
 
 require (
 	github.com/charmbracelet/lipgloss v1.1.0
-	github.com/docker/docker v28.2.2+incompatible
+	github.com/docker/docker v28.3.3+incompatible
 	github.com/docker/go-connections v0.5.0
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/mux v1.8.0
